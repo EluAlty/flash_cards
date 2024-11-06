@@ -1,23 +1,24 @@
+// src/presentation/commands/DeleteDeckCommand.java
 package presentation.commands;
 
-import application.services.DeckService;
+import application.ports.in.DeckManagementInputPort;
 import java.util.Scanner;
 
 public class DeleteDeckCommand implements Command {
     private final Scanner scanner;
-    private final DeckService deckService;
+    private final DeckManagementInputPort deckService;
 
-    public DeleteDeckCommand(Scanner scanner, DeckService deckService) {
+    public DeleteDeckCommand(Scanner scanner, DeckManagementInputPort deckService) {
         this.scanner = scanner;
         this.deckService = deckService;
     }
 
     @Override
     public void execute() {
-        System.out.print("Enter deck name to delete: ");
-        String deckName = scanner.nextLine();
-        
-        deckService.deleteDeck(deckName);
+        System.out.print("Enter deck ID to delete: ");
+        String deckId = scanner.nextLine();
+
+        deckService.deleteDeck(deckId);
         System.out.println("Deck deleted successfully!");
     }
-} 
+}

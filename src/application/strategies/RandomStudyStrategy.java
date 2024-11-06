@@ -1,3 +1,4 @@
+// src/application/strategies/RandomStudyStrategy.java
 package application.strategies;
 
 import domain.entities.Card;
@@ -20,20 +21,19 @@ public class RandomStudyStrategy implements StudyStrategy {
     public void study(Deck deck, StudyObserver observer) {
         List<Card> cards = prepareCards(deck.getCards());
         Scanner scanner = new Scanner(System.in);
-        
+
         for (Card card : cards) {
             System.out.println("\nQuestion: " + card.getQuestion());
             System.out.print("Press Enter to see answer...");
             scanner.nextLine();
-            
+
             System.out.println("Answer: " + card.getAnswer());
             observer.onCardStudied(card);
-            
+
             System.out.print("Press Enter for next card...");
             scanner.nextLine();
         }
-        
-        scanner.close();
+
         observer.onStudySessionCompleted(cards.size());
     }
-} 
+}

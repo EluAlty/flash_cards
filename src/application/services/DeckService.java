@@ -1,37 +1,49 @@
 package application.services;
 
+import application.dto.CardDto;
+import application.dto.DeckDto;
+import application.ports.in.DeckManagementInputPort;
+import application.ports.out.DeckPersistenceOutputPort;
 import domain.entities.Card;
 import domain.entities.Deck;
-import domain.repositories.DeckRepository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public class DeckService {
-    private final DeckRepository deckRepository;
+public class DeckService implements DeckManagementInputPort {
+    private final DeckPersistenceOutputPort deckRepository;
 
-    public DeckService(DeckRepository deckRepository) {
+    public DeckService(DeckPersistenceOutputPort deckRepository) {
         this.deckRepository = deckRepository;
     }
 
-
-
-    public Deck createDeck(String name, String description) {
+    @Override
+    public DeckDto createDeck(String name, String description) {
         Deck deck = new Deck.Builder()
                 .name(name)
                 .description(description)
                 .build();
         deckRepository.save(deck);
-        return deck;
+        return convertToDeckDto(deck);
     }
 
-    public void addCardToDeck(String deckId, Card card) {
+    @Override
+    public void addCardToDeck(String deckId, CardDto cardDto) {
         deckRepository.findById(deckId).ifPresent(deck -> {
+            Card card = new Card.Builder()
+                    .id(UUID.randomUUID().toString())
+                    .question(cardDto.getQuestion())
+                    .answer(cardDto.getAnswer())
+                    .difficulty(cardDto.getDifficulty())
+                    .build();
             deck.addCard(card);
             deckRepository.save(deck);
         });
     }
 
+    @Override
     public void removeCardFromDeck(String deckId, String cardId) {
         deckRepository.findById(deckId).ifPresent(deck -> {
             deck.removeCard(cardId);
@@ -39,40 +51,32 @@ public class DeckService {
         });
     }
 
+    @Override
     public void deleteDeck(String deckId) {
         deckRepository.delete(deckId);
     }
 
-    public List<Deck> getAllDecks() {
-        return deckRepository.findAll();
+    @Override
+    public List<DeckDto> getAllDecks() {
+        return deckRepository.findAll().stream()
+                .map(this::convertToDeckDto)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Deck> getDeckById(String id) {
-        return deckRepository.findById(id);
+    @Override
+    public DeckDto getDeckById(String id) {
+        Optional<Deck> deck = deckRepository.findById(id);
+        return deck.map(this::convertToDeckDto).orElse(null);
     }
 
-    public void addCard(String deckName, String question, String answer, int difficulty) {
-        Card card = new Card.Builder()
-                .id(UUID.randomUUID().toString())
-                .question(question)
-                .answer(answer)
-                .difficulty(difficulty)
-                .build();
-                
-        getDeckById(deckName).ifPresent(deck -> {
-            deck.addCard(card);
-            deckRepository.save(deck);
-        });
+    private DeckDto convertToDeckDto(Deck deck) {
+        List<CardDto> cardDtos = deck.getCards().stream()
+                .map(this::convertToCardDto)
+                .collect(Collectors.toList());
+        return new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), cardDtos);
     }
 
-    public void removeCard(String deckName, String cardId) {
-        getDeckById(deckName).ifPresent(deck -> {
-            deck.removeCard(cardId);
-            deckRepository.save(deck);
-        });
+    private CardDto convertToCardDto(Card card) {
+        return new CardDto(card.getId(), card.getQuestion(), card.getAnswer(), card.getDifficulty());
     }
-
-    public Deck createDeck(String name) {
-        return createDeck(name, "");
-    }
-} 
+}

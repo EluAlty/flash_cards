@@ -1,3 +1,4 @@
+// src/application/strategies/DifficultyBasedStrategy.java
 package application.strategies;
 
 import domain.entities.Card;
@@ -19,17 +20,17 @@ public class DifficultyBasedStrategy implements StudyStrategy {
     public void study(Deck deck, StudyObserver observer) {
         List<Card> cards = prepareCards(deck.getCards());
         Scanner scanner = new Scanner(System.in);
-        
+
         for (Card card : cards) {
             System.out.println("\nQuestion: " + card.getQuestion());
             System.out.print("Press Enter to see the answer...");
             scanner.nextLine();
-            
+
             System.out.println("Answer: " + card.getAnswer());
             observer.onCardStudied(card);
         }
-        
+
         scanner.close();
         observer.onStudySessionCompleted(cards.size());
     }
-} 
+}

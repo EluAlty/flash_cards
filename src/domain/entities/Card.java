@@ -13,7 +13,6 @@ public class Card {
         this.difficulty = builder.difficulty;
     }
 
-   
     public static class Builder {
         private String id;
         private String question;
@@ -45,9 +44,8 @@ public class Card {
         }
     }
 
-   
     public String getId() { return id; }
     public String getQuestion() { return question; }
     public String getAnswer() { return answer; }
     public int getDifficulty() { return difficulty; }
-} 
+}

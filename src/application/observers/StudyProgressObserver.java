@@ -16,4 +16,4 @@ public class StudyProgressObserver implements StudyObserver {
         System.out.println("Session completed! Studied " + cardsStudied + "/" + totalCards + " cards");
         cardsStudied = 0;
     }
-} 
+}

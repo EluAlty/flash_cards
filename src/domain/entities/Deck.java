@@ -25,7 +25,6 @@ public class Deck {
         cards.removeIf(card -> card.getId().equals(cardId));
     }
 
-    // Builder Pattern
     public static class Builder {
         private String id;
         private String name;
@@ -50,9 +49,8 @@ public class Deck {
         }
     }
 
-    // Getters
     public String getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
     public List<Card> getCards() { return new ArrayList<>(cards); }
-} 
+}

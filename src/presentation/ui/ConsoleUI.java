@@ -1,9 +1,11 @@
-package presentation;
+// src/presentation/ui/ConsoleUI.java
+        package presentation.ui;
 
-import application.services.DeckService;
-import application.strategies.StudyStrategy;
 import application.observers.StudyObserver;
+import application.ports.in.DeckManagementInputPort;
+import application.strategies.StudyStrategy;
 import presentation.commands.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -12,13 +14,13 @@ public class ConsoleUI {
     private final Scanner scanner;
     private final Map<Integer, Command> commands;
 
-    public ConsoleUI(DeckService deckService, StudyStrategy studyStrategy, StudyObserver studyObserver) {
+    public ConsoleUI(DeckManagementInputPort deckService, StudyStrategy studyStrategy, StudyObserver studyObserver) {
         this.scanner = new Scanner(System.in);
         this.commands = new HashMap<>();
         initializeCommands(deckService, studyStrategy, studyObserver);
     }
 
-    private void initializeCommands(DeckService deckService, StudyStrategy studyStrategy, StudyObserver studyObserver) {
+    private void initializeCommands(DeckManagementInputPort deckService, StudyStrategy studyStrategy, StudyObserver studyObserver) {
         commands.put(1, new CreateDeckCommand(scanner, deckService));
         commands.put(2, new ViewDecksCommand(deckService));
         commands.put(3, new AddCardCommand(scanner, deckService));
@@ -31,8 +33,7 @@ public class ConsoleUI {
         boolean running = true;
         while (running) {
             printMenu();
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = Integer.parseInt(scanner.nextLine());
 
             if (choice == 0) {
                 running = false;
@@ -58,4 +59,4 @@ public class ConsoleUI {
         System.out.println("0. Exit");
         System.out.print("Choose action: ");
     }
-} 
+}

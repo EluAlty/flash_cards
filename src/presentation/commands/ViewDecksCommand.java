@@ -1,34 +1,36 @@
+// src/presentation/commands/ViewDecksCommand.java
 package presentation.commands;
 
-import application.services.DeckService;
-import domain.entities.Deck;
-import domain.entities.Card;
+import application.dto.DeckDto;
+import application.dto.CardDto;
+import application.ports.in.DeckManagementInputPort;
 import java.util.List;
 
 public class ViewDecksCommand implements Command {
-    private final DeckService deckService;
+    private final DeckManagementInputPort deckService;
 
-    public ViewDecksCommand(DeckService deckService) {
+    public ViewDecksCommand(DeckManagementInputPort deckService) {
         this.deckService = deckService;
     }
 
     @Override
     public void execute() {
-        List<Deck> decks = deckService.getAllDecks();
+        List<DeckDto> decks = deckService.getAllDecks();
         if (decks.isEmpty()) {
             System.out.println("No decks available.");
             return;
         }
-        
+
         System.out.println("\nAvailable decks:");
-        for (Deck deck : decks) {
-            System.out.println("\nDeck: " + deck.getName());
-            List<Card> cards = deck.getCards();
+        for (DeckDto deck : decks) {
+            System.out.println("\nDeck: " + deck.getName() + " (ID: " + deck.getId() + ")");
+            System.out.println("Description: " + deck.getDescription());
+            List<CardDto> cards = deck.getCards();
             if (cards.isEmpty()) {
                 System.out.println("  No cards in this deck");
             } else {
                 System.out.println("  Cards:");
-                for (Card card : cards) {
+                for (CardDto card : cards) {
                     System.out.println("  - ID: " + card.getId());
                     System.out.println("    Question: " + card.getQuestion());
                     System.out.println("    Difficulty: " + card.getDifficulty());
@@ -36,4 +38,4 @@ public class ViewDecksCommand implements Command {
             }
         }
     }
-} 
+}
