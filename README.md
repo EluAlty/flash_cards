@@ -5,16 +5,16 @@
 
 ## Документация
 - [Обзор архитектуры](overview.md)
-- [Руководство пользователя](docs/user_guide.md)
+- [Руководство пользователя](user_guide.md)
 - [Ограничения системы](limitations.md)
 
 ## Паттерны проектирования
-- [Factory Method](docs/design_patterns/factory_method.md)
-- [Abstract Factory](docs/design_patterns/abstract_factory.md)
-- [Decorator](docs/design_patterns/decorator.md)
-- [Observer](docs/design_patterns/observer.md)
-- [Strategy](docs/design_patterns/strategy.md)
-- [Command](docs/design_patterns/command.md)
+- [Factory Method](factory_method.md)
+- [Abstract Factory](abstract_factory.md)
+- [Decorator](decorator.md)
+- [Observer](observer.md)
+- [Strategy](strategy.md)
+- [Command](command.md)
 
 ## Запуск проекта
 1. Убедитесь, что у вас установлена Java Development Kit (JDK) версии 8 или выше.
