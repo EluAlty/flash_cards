@@ -1,0 +1,64 @@
+@startuml
+package "domain.entities" {
+  abstract class Card {
+    +String id
+    +String question
+    +String answer
+    +int difficulty
+    +getType(): String
+  }
+  class TextCard {
+    +getType(): String
+  }
+  class ImageCard {
+    -String imageUrl
+    +getType(): String
+  }
+  class Deck {
+    +String id
+    +String name
+    +String description
+    +List<Card> cards
+    +addCard(Card card): void
+    +removeCard(String cardId): void
+  }
+}
+
+package "application" {
+  interface CardFactory {
+    +createCard(String id, String question, String answer): Card
+  }
+  class TextCardFactory {
+    +createCard(String id, String question, String answer): Card
+  }
+  class ImageCardFactory {
+    +createCard(String id, String question, String answer): Card
+  }
+  interface StudyStrategy {
+    +orderCardsForStudy(List<Card> cards): List<Card>
+  }
+  class RandomStudyStrategy {
+    +orderCardsForStudy(List<Card> cards): List<Card>
+  }
+  class DifficultyBasedStrategy {
+    +orderCardsForStudy(List<Card> cards): List<Card>
+  }
+  interface StudyObserver {
+    +onCardStudied(Card card, boolean correct): void
+  }
+  class StudyProgressObserver {
+    -int totalCards
+    -int correctAnswers
+    +onCardStudied(Card card, boolean correct): void
+  }
+}
+
+Card <|-- TextCard
+Card <|-- ImageCard
+Deck "1" *-- "many" Card
+CardFactory <|.. TextCardFactory
+CardFactory <|.. ImageCardFactory
+StudyStrategy <|.. RandomStudyStrategy
+StudyStrategy <|.. DifficultyBasedStrategy
+StudyObserver <|.. StudyProgressObserver
+@enduml
