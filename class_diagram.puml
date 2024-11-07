@@ -6,14 +6,30 @@ package "domain.entities" {
     +String answer
     +int difficulty
     +getType(): String
+    +getDifficulty(): int
   }
+  
   class TextCard {
     +getType(): String
   }
+  
   class ImageCard {
     -String imageUrl
     +getType(): String
   }
+  
+  abstract class CardDecorator {
+    #Card decoratedCard
+    +getType(): String
+    +getDifficulty(): int
+  }
+  
+  class TimedCard {
+    -int timeLimit
+    +getType(): String
+    +checkTimeLimit(): boolean
+  }
+  
   class Deck {
     +String id
     +String name
@@ -26,39 +42,79 @@ package "domain.entities" {
 
 package "application" {
   interface CardFactory {
-    +createCard(String id, String question, String answer): Card
+    +createCard(String id, String question, String answer, int difficulty): Card
   }
+  
   class TextCardFactory {
-    +createCard(String id, String question, String answer): Card
+    +createCard(String id, String question, String answer, int difficulty): Card
   }
+  
   class ImageCardFactory {
-    +createCard(String id, String question, String answer): Card
+    +createCard(String id, String question, String answer, int difficulty): Card
   }
+  
   interface StudyStrategy {
     +orderCardsForStudy(List<Card> cards): List<Card>
   }
+  
   class RandomStudyStrategy {
     +orderCardsForStudy(List<Card> cards): List<Card>
   }
+  
   class DifficultyBasedStrategy {
     +orderCardsForStudy(List<Card> cards): List<Card>
   }
+  
   interface StudyObserver {
     +onCardStudied(Card card, boolean correct): void
   }
+  
   class StudyProgressObserver {
     -int totalCards
     -int correctAnswers
     +onCardStudied(Card card, boolean correct): void
+    +getProgress(): double
+  }
+  
+  class DeckService {
+    -DeckPersistenceOutputPort deckPersistence
+    -CardFactory textCardFactory
+    -CardFactory imageCardFactory
+    +getDeck(String id): DeckDto
+    +getAllDecks(): List<DeckDto>
+    +addCard(String deckId, CardDto cardDto): void
+    +removeCard(String deckId, String cardId): void
+  }
+}
+
+package "infrastructure" {
+  interface DeckPersistenceOutputPort {
+    +saveDeck(Deck deck): void
+    +loadDeck(String id): Deck
+    +deleteDeck(String id): void
+    +getAllDecks(): List<Deck>
+  }
+  
+  class FileSystemAdapter {
+    +saveDeck(Deck deck): void
+    +loadDeck(String id): Deck
+    +deleteDeck(String id): void
+    +getAllDecks(): List<Deck>
   }
 }
 
 Card <|-- TextCard
 Card <|-- ImageCard
+Card <|-- CardDecorator
+CardDecorator <|-- TimedCard
+CardDecorator o-- Card
 Deck "1" *-- "many" Card
 CardFactory <|.. TextCardFactory
 CardFactory <|.. ImageCardFactory
 StudyStrategy <|.. RandomStudyStrategy
 StudyStrategy <|.. DifficultyBasedStrategy
 StudyObserver <|.. StudyProgressObserver
+DeckService --> DeckPersistenceOutputPort
+DeckPersistenceOutputPort <|.. FileSystemAdapter
+DeckService --> CardFactory
 @enduml
