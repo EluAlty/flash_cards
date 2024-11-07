@@ -1,9 +1,9 @@
-// src/presentation/ui/ConsoleUI.java
-        package presentation.ui;
+package presentation.ui;
 
 import application.observers.StudyObserver;
 import application.ports.in.DeckManagementInputPort;
 import application.strategies.StudyStrategy;
+import application.usecases.CreateDeckUseCase;
 import presentation.commands.*;
 
 import java.util.HashMap;
@@ -14,14 +14,14 @@ public class ConsoleUI {
     private final Scanner scanner;
     private final Map<Integer, Command> commands;
 
-    public ConsoleUI(DeckManagementInputPort deckService, StudyStrategy studyStrategy, StudyObserver studyObserver) {
+    public ConsoleUI(DeckManagementInputPort deckService, StudyStrategy studyStrategy, StudyObserver studyObserver, CreateDeckUseCase createDeckUseCase) {
         this.scanner = new Scanner(System.in);
         this.commands = new HashMap<>();
-        initializeCommands(deckService, studyStrategy, studyObserver);
+        initializeCommands(deckService, studyStrategy, studyObserver, createDeckUseCase);
     }
 
-    private void initializeCommands(DeckManagementInputPort deckService, StudyStrategy studyStrategy, StudyObserver studyObserver) {
-        commands.put(1, new CreateDeckCommand(scanner, deckService));
+    private void initializeCommands(DeckManagementInputPort deckService, StudyStrategy studyStrategy, StudyObserver studyObserver, CreateDeckUseCase createDeckUseCase) {
+        commands.put(1, new CreateDeckCommand(scanner, createDeckUseCase));
         commands.put(2, new ViewDecksCommand(deckService));
         commands.put(3, new AddCardCommand(scanner, deckService));
         commands.put(4, new RemoveCardCommand(scanner, deckService));

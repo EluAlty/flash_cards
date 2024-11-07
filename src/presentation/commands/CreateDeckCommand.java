@@ -1,16 +1,15 @@
-// src/presentation/commands/CreateDeckCommand.java
 package presentation.commands;
 
-import application.ports.in.DeckManagementInputPort;
+import application.usecases.CreateDeckUseCase;
 import java.util.Scanner;
 
 public class CreateDeckCommand implements Command {
     private final Scanner scanner;
-    private final DeckManagementInputPort deckService;
+    private final CreateDeckUseCase createDeckUseCase;
 
-    public CreateDeckCommand(Scanner scanner, DeckManagementInputPort deckService) {
+    public CreateDeckCommand(Scanner scanner, CreateDeckUseCase createDeckUseCase) {
         this.scanner = scanner;
-        this.deckService = deckService;
+        this.createDeckUseCase = createDeckUseCase;
     }
 
     @Override
@@ -19,7 +18,7 @@ public class CreateDeckCommand implements Command {
         String name = scanner.nextLine();
         System.out.print("Enter deck description: ");
         String description = scanner.nextLine();
-        deckService.createDeck(name, description);
-        System.out.println("Deck created successfully!");
+        createDeckUseCase.execute(name, description);
+        System.out.println("Deck created successfully.");
     }
 }

@@ -1,4 +1,3 @@
-// src/presentation/commands/DeleteDeckCommand.java
 package presentation.commands;
 
 import application.ports.in.DeckManagementInputPort;
@@ -19,6 +18,6 @@ public class DeleteDeckCommand implements Command {
         String deckId = scanner.nextLine();
 
         deckService.deleteDeck(deckId);
-        System.out.println("Deck deleted successfully!");
+        System.out.println("Deck deleted successfully.");
     }
 }

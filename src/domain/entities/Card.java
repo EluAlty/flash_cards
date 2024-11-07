@@ -1,51 +1,32 @@
 package domain.entities;
 
-public class Card {
-    private String id;
-    private String question;
-    private String answer;
-    private int difficulty;
+import java.io.Serializable;
 
-    private Card(Builder builder) {
-        this.id = builder.id;
-        this.question = builder.question;
-        this.answer = builder.answer;
-        this.difficulty = builder.difficulty;
+public abstract class Card implements Serializable {
+    protected String id;
+    protected String question;
+    protected String answer;
+    protected int difficulty;
+
+    public Card(String id, String question, String answer) {
+        this.id = id;
+        this.question = question;
+        this.answer = answer;
+        this.difficulty = 1;
     }
 
-    public static class Builder {
-        private String id;
-        private String question;
-        private String answer;
-        private int difficulty;
+    public abstract String getType();
 
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder question(String question) {
-            this.question = question;
-            return this;
-        }
-
-        public Builder answer(String answer) {
-            this.answer = answer;
-            return this;
-        }
-
-        public Builder difficulty(int difficulty) {
-            this.difficulty = difficulty;
-            return this;
-        }
-
-        public Card build() {
-            return new Card(this);
-        }
-    }
-
+    // Getters and setters
     public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getQuestion() { return question; }
+    public void setQuestion(String question) { this.question = question; }
     public String getAnswer() { return answer; }
+    public void setAnswer(String answer) { this.answer = answer; }
     public int getDifficulty() { return difficulty; }
+    public void setDifficulty(int difficulty) { if (difficulty >= 1 && difficulty <= 5) {
+        this.difficulty = difficulty;
+    }
+    }
 }

@@ -1,36 +1,63 @@
 package infrastructure.adapters;
 
+import application.ports.out.DeckPersistenceOutputPort;
+import domain.entities.Deck;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class FileSystemAdapter {
-    private static FileSystemAdapter instance;
-    private final String basePath = "flashcards/";
+public class FileSystemAdapter implements DeckPersistenceOutputPort {
+    private static final String STORAGE_DIR = "decks/";
 
-    private FileSystemAdapter() {
-        new File(basePath).mkdirs();
-    }
-
-    public static FileSystemAdapter getInstance() {
-        if (instance == null) {
-            instance = new FileSystemAdapter();
+    public FileSystemAdapter() {
+        File dir = new File(STORAGE_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
-        return instance;
     }
 
-    public void saveToFile(String filename, List<String> data) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(basePath + filename))) {
-            data.forEach(writer::println);
+    @Override
+    public void saveDeck(Deck deck) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(STORAGE_DIR + deck.getId() + ".ser"))) {
+            oos.writeObject(deck);
         } catch (IOException e) {
-            throw new RuntimeException("Error saving to file: " + filename, e);
+            e.printStackTrace();
         }
     }
 
-    public List<String> readFromFile(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(basePath + filename))) {
-            return reader.lines().toList();
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading from file: " + filename, e);
+    @Override
+    public Deck loadDeck(String deckId) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(STORAGE_DIR + deckId + ".ser"))) {
+            return (Deck) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
+
+    @Override
+    public void deleteDeck(String deckId) {
+        File file = new File(STORAGE_DIR + deckId + ".ser");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    @Override
+    public List<Deck> getAllDecks() {
+        List<Deck> decks = new ArrayList<>();
+        File dir = new File(STORAGE_DIR);
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".ser"));
+        if (files != null) {
+            for (File file : files) {
+                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                    Deck deck = (Deck) ois.readObject();
+                    decks.add(deck);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return decks;
     }
 }

@@ -1,15 +1,15 @@
 package application.ports.in;
 
-import application.dto.DeckDto;
 import application.dto.CardDto;
-
+import application.dto.DeckDto;
 import java.util.List;
 
 public interface DeckManagementInputPort {
     DeckDto createDeck(String name, String description);
-    void addCardToDeck(String deckId, CardDto card);
-    void removeCardFromDeck(String deckId, String cardId);
-    void deleteDeck(String deckId);
+    void addCard(String deckId, CardDto cardDto);
+    void removeCard(String deckId, String cardId);
+    DeckDto getDeck(String deckId);
     List<DeckDto> getAllDecks();
-    DeckDto getDeckById(String id);
+    void deleteDeck(String deckId);
+    void studyDeck(String deckId);
 }

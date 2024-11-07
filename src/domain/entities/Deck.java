@@ -1,19 +1,19 @@
 package domain.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class Deck {
+public class Deck implements Serializable {
     private String id;
     private String name;
     private String description;
     private List<Card> cards;
 
-    private Deck(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.description = builder.description;
+    public Deck(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.cards = new ArrayList<>();
     }
 
@@ -25,32 +25,13 @@ public class Deck {
         cards.removeIf(card -> card.getId().equals(cardId));
     }
 
-    public static class Builder {
-        private String id;
-        private String name;
-        private String description;
-
-        public Builder() {
-            this.id = UUID.randomUUID().toString();
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Deck build() {
-            return new Deck(this);
-        }
-    }
-
+    // Getters and setters
     public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     public String getDescription() { return description; }
-    public List<Card> getCards() { return new ArrayList<>(cards); }
+    public void setDescription(String description) { this.description = description; }
+    public List<Card> getCards() { return cards; }
+    public void setCards(List<Card> cards) { this.cards = cards; }
 }
