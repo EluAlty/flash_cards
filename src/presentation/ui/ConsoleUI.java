@@ -33,20 +33,25 @@ public class ConsoleUI {
         boolean running = true;
         while (running) {
             printMenu();
-            int choice = Integer.parseInt(scanner.nextLine());
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
 
-            if (choice == 0) {
-                running = false;
-            } else {
-                Command command = commands.get(choice);
-                if (command != null) {
-                    command.execute();
+                if (choice == 0) {
+                    running = false;
                 } else {
-                    System.out.println("Invalid choice. Please try again.");
+                    Command command = commands.get(choice);
+                    if (command != null) {
+                        command.execute();
+                    } else {
+                        System.out.println("Invalid choice. Please try again.");
+                    }
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
             }
         }
     }
+
 
     private void printMenu() {
         System.out.println("\n=== Flashcards Application ===");
