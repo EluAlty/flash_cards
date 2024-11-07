@@ -37,8 +37,8 @@ public class DeckService implements DeckManagementInputPort {
         Deck deck = deckPersistence.loadDeck(deckId);
         if (deck != null) {
             Card card = cardDto.getType().equals("IMAGE")
-                    ? imageCardFactory.createCard(UUID.randomUUID().toString(), cardDto.getQuestion(), cardDto.getAnswer())
-                    : textCardFactory.createCard(UUID.randomUUID().toString(), cardDto.getQuestion(), cardDto.getAnswer());
+                    ? imageCardFactory.createCard(cardDto.getId(), cardDto.getQuestion(), cardDto.getAnswer(), cardDto.getDifficulty())
+                    : textCardFactory.createCard(cardDto.getId(), cardDto.getQuestion(), cardDto.getAnswer(), cardDto.getDifficulty());
             deck.addCard(card);
             deckPersistence.saveDeck(deck);
         }
@@ -58,7 +58,7 @@ public class DeckService implements DeckManagementInputPort {
         Deck deck = deckPersistence.loadDeck(deckId);
         if (deck != null) {
             List<CardDto> cardDtos = deck.getCards().stream()
-                    .map(card -> new CardDto(card.getId(), card.getQuestion(), card.getAnswer(), card.getType()))
+                    .map(card -> new CardDto(card.getId(), card.getQuestion(), card.getAnswer(), card.getType(), card.getDifficulty()))
                     .collect(Collectors.toList());
             return new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), cardDtos);
         }

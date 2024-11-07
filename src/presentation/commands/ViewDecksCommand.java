@@ -13,17 +13,24 @@ public class ViewDecksCommand implements Command {
 
     @Override
     public void execute() {
-        List<DeckDto> decks = deckService.getAllDecks();
-        if (decks.isEmpty()) {
-            System.out.println("No decks available.");
-        } else {
+        try {
+            List<DeckDto> decks = deckService.getAllDecks();
+            if (decks.isEmpty()) {
+                System.out.println("No decks available.");
+                return;
+            }
+
             System.out.println("Available decks:");
             for (DeckDto deck : decks) {
-                System.out.println("ID: " + deck.getId());
+                DeckDto fullDeck = deckService.getDeck(deck.getId());
+                int cardCount = fullDeck.getCards() != null ? fullDeck.getCards().size() : 0;
                 System.out.println("Name: " + deck.getName());
                 System.out.println("Description: " + deck.getDescription());
+                System.out.println("Cards count: " + cardCount);
                 System.out.println("--------------------");
             }
+        } catch (Exception e) {
+            System.out.println("Error while viewing decks. Please try again.");
         }
     }
 }
